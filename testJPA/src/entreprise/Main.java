@@ -8,9 +8,9 @@ public class Main {
 		p.setNom("Tintin");
 		p.setKey(1);
 		
-		EntityManager entityManager = 
+		//EntityManager entityManager = new En
 
-		entityManager.persist(p);
+		//entityManager.persist(p);
 	}
 
 }
