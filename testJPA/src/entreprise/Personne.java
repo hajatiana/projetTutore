@@ -1,5 +1,6 @@
 package entreprise;
 
+//Lylia
 @Entity
 public class Personne {
 	
