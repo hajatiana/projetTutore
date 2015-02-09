@@ -21,8 +21,6 @@ public class TreilliController {
 	public Treilli createTreilli(int size){
 		char a = 'a';
 		Treilli treilli = new Treilli(size);
-
-		// Ici, on initialise la première ligne
 		Step firstStep = new Step();
 		firstStep.setNumber(1);
 		for(int j=0; j<size; j++){
@@ -35,25 +33,33 @@ public class TreilliController {
 		treilli.addStep(firstStep);
 
 		for(int i=1; i<size; i++){
-			Step currentStep = new Step();
-			currentStep.setNumber(i+1);
-			for(int j=0; j<=size-currentStep.getNumber(); j++){
-				int max=size-currentStep.getNumber();
-				System.out.println("Step"+i+": j="+j+" et max="+max);
-				Node nodeJ = firstStep.get(j);
-				for(int k=j+1; k<currentStep.getNumber(); k++){
-					String name = nodeJ.getName();
-					Node node = new Node();
-					Node nodeK = firstStep.get(k);
-					name+=nodeK.getName();
-					node.setName(name);
-					node.setWeight(1);
-					currentStep.add(node);
-				}
-			}
+			Step currentStep = getPermutation(firstStep, i);
+			currentStep.setNumber(i+1);			
 			treilli.addStep(currentStep);
 		}
 		return treilli;
+	}
+		
+	public Step getPermutation(Step tab, int lot){		
+		Step result = new Step();		
+		Node firstNode = tab.get(0);
+		Step temp = (Step) tab.clone();					
+		if(lot>0){			
+			temp.remove(0);
+			Step p = getPermutation(temp,lot-1);			
+			for (Node node : p) {		
+				Node currentNode = new Node();
+				currentNode.setName(firstNode.getName()+node.getName());
+				currentNode.setWeight(firstNode.getWeight()+node.getWeight());
+				result.add(currentNode);
+			}
+			if(temp.size()>lot){
+				result.addAll(getPermutation(temp,lot));
+			}
+		}else{
+			return temp;
+		}
+		return result;
 	}
 
 }
