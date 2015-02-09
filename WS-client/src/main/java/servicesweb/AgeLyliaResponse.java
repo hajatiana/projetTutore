@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Classe Java pour ageLyliaResponse complex type.
  * 
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>Le fragment de schÃ©ma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
  * &lt;complexType name="ageLyliaResponse">
@@ -36,7 +36,7 @@ public class AgeLyliaResponse {
     protected int _return;
 
     /**
-     * Obtient la valeur de la propriété return.
+     * Obtient la valeur de la propriÃ©tÃ© return.
      * 
      */
     public int getReturn() {
@@ -44,7 +44,7 @@ public class AgeLyliaResponse {
     }
 
     /**
-     * Définit la valeur de la propriété return.
+     * DÃ©finit la valeur de la propriÃ©tÃ© return.
      * 
      */
     public void setReturn(int value) {

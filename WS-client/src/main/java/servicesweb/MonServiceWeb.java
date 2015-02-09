@@ -25,6 +25,15 @@ public interface MonServiceWeb {
 
     /**
      * 
+     */
+    @WebMethod
+    @RequestWrapper(localName = "afficheLylia", targetNamespace = "http://servicesWeb/", className = "servicesweb.AfficheLylia")
+    @ResponseWrapper(localName = "afficheLyliaResponse", targetNamespace = "http://servicesWeb/", className = "servicesweb.AfficheLyliaResponse")
+    @Action(input = "http://servicesWeb/MonServiceWeb/afficheLyliaRequest", output = "http://servicesWeb/MonServiceWeb/afficheLyliaResponse")
+    public void afficheLylia();
+
+    /**
+     * 
      * @return
      *     returns int
      */
@@ -34,14 +43,5 @@ public interface MonServiceWeb {
     @ResponseWrapper(localName = "ageLyliaResponse", targetNamespace = "http://servicesWeb/", className = "servicesweb.AgeLyliaResponse")
     @Action(input = "http://servicesWeb/MonServiceWeb/ageLyliaRequest", output = "http://servicesWeb/MonServiceWeb/ageLyliaResponse")
     public int ageLylia();
-
-    /**
-     * 
-     */
-    @WebMethod
-    @RequestWrapper(localName = "afficheLylia", targetNamespace = "http://servicesWeb/", className = "servicesweb.AfficheLylia")
-    @ResponseWrapper(localName = "afficheLyliaResponse", targetNamespace = "http://servicesWeb/", className = "servicesweb.AfficheLyliaResponse")
-    @Action(input = "http://servicesWeb/MonServiceWeb/afficheLyliaRequest", output = "http://servicesWeb/MonServiceWeb/afficheLyliaResponse")
-    public void afficheLylia();
 
 }
