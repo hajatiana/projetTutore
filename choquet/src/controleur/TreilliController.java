@@ -26,7 +26,7 @@ public class TreilliController {
 		for(int j=0; j<size; j++){
 			Node n = new Node();
 			n.setName(Character.toString(a++));
-			n.setWeight(1);
+			n.setWeight((float)1/size);
 			firstStep.add(n);
 		}
 		firstStep.setNumber(1);
