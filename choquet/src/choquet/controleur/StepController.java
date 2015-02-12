@@ -1,7 +1,7 @@
-package controleur;
+package choquet.controleur;
 
-import model.Node;
-import model.Step;
+import choquet.model.Node;
+import choquet.model.Step;
 
 public class StepController {
 	private NodeController nodeController;

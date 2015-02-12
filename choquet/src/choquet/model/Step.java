@@ -1,4 +1,4 @@
-package model;
+package choquet.model;
 
 import java.util.ArrayList;
 
