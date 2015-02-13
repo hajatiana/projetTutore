@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -53,8 +52,8 @@ public class MainView extends Composite{
 	private Font titleFont = SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD);
 	private Text txtNumberOfClass;
 
-	public MainView(Shell shell){
-		super(shell, SWT.NONE);
+	public MainView(Composite parent){
+		super(parent, SWT.NONE);
 		setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		setBackgroundMode(SWT.INHERIT_FORCE);
 		setLayout(new GridLayout(1,true));
@@ -140,7 +139,9 @@ public class MainView extends Composite{
 
 		btnAddDataToClassify.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(SelectionEvent e) {				
+				AddDataView addDataView = new AddDataView(getShell(), treilli.getSteps().get(0));				
+				addDataView.open();
 			}
 		});
 	}
@@ -191,9 +192,9 @@ public class MainView extends Composite{
 		new Label(panelComposite, SWT.NONE);
 		new Label(panelComposite, SWT.NONE);
 
-		Label lblNumberOfClass = new Label(panelComposite, SWT.NONE);
-		lblNumberOfClass.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblNumberOfClass.setText("Number of class");
+		Label lblAlpha = new Label(panelComposite, SWT.NONE);
+		lblAlpha.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblAlpha.setText("Precision Alpha");
 
 		txtNumberOfClass = new Text(panelComposite, SWT.BORDER);
 		txtNumberOfClass.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -263,7 +264,7 @@ public class MainView extends Composite{
 		compositeResult.setLayout(new GridLayout(1, false));
 		GridData gdResult = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gdResult.widthHint = 205;
-		gdResult.heightHint = 400;
+		gdResult.heightHint = 350;
 		compositeResult.setLayoutData(gdResult);
 
 		table = new Table(compositeResult, SWT.BORDER | SWT.FULL_SELECTION);
@@ -311,7 +312,9 @@ public class MainView extends Composite{
 		btnAddDataToClassify.setText("Add data to classify");
 
 		text = new Text(this, SWT.BORDER | SWT.MULTI);
-		text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		GridData gd_text = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
+		gd_text.heightHint = 100;
+		text.setLayoutData(gd_text);
 	}
 
 	public void reset(){
