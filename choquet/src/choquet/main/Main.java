@@ -11,9 +11,9 @@ import choquet.view.MainView;
 
 public class Main {
 	public static void main(String[] args) {
-		int shellWidth=998, shellHeight=700;
 		Display display = new Display();
-		Shell shell = new Shell(display, SWT.TITLE | SWT.CLOSE);
+		int shellWidth=998, shellHeight=Utils.getMaxHeight(display);
+		Shell shell = new Shell(display, SWT.TITLE | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.RESIZE);
 		shell.setText("Classification par la méthode d'intégrale de Choquet");
 		shell.setSize(shellWidth, shellHeight);
 		shell.setLayout(new GridLayout(1, false));

@@ -14,4 +14,10 @@ public class Utils {
 		int y = bounds.y + ((bounds.height - rect.height) / 2);
 		shell.setLocation(x, y);
 	}
+
+	public static int getMaxHeight(Display display){
+		Monitor primary = display.getPrimaryMonitor();
+		Rectangle bounds = primary.getBounds();
+		return bounds.height;
+	}
 }

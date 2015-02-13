@@ -7,6 +7,7 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
@@ -41,11 +42,16 @@ public class MainView extends Composite{
 
 	private Table table;
 	private Text txtNumberOfCriteria;
-	private Button btnCalculate;
+	private Button btnRun;
+	private Button btnReset;
 	private Composite compositeGraph;
 	private ScrolledComposite scrolledComposite;
 	private Text txtBrowse;
 	private Button btnParcourir;
+	private Text text;
+	private Button btnAddDataToClassify;
+	private Font titleFont = SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD);
+	private Text txtNumberOfClass;
 
 	public MainView(Shell shell){
 		super(shell, SWT.NONE);
@@ -82,7 +88,7 @@ public class MainView extends Composite{
 			}
 		});
 
-		btnCalculate.addSelectionListener(new SelectionAdapter() {
+		btnRun.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if(txtNumberOfCriteria.getText().isEmpty()){
@@ -92,10 +98,8 @@ public class MainView extends Composite{
 					messageBox.open();
 					return;
 				}
-
 				reset();
-				scrolledComposite.redraw();
-
+				btnReset.setEnabled(true);
 				treilliController = new TreilliController();
 				nodeController = new NodeController();
 				treilli = treilliController.createTreilli(Integer.parseInt(txtNumberOfCriteria.getText()));
@@ -111,10 +115,14 @@ public class MainView extends Composite{
 			}
 		});
 
-		btnParcourir.addSelectionListener(new SelectionAdapter()
-		{
+		btnReset.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {}
+			public void widgetSelected(SelectionEvent e) {
+				reset();
+			}
+		});
+
+		btnParcourir.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent arg0)
 			{
@@ -128,31 +136,38 @@ public class MainView extends Composite{
 					return;
 				}
 			}
-		}
-				);
+		});
+
+		btnAddDataToClassify.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
 	}
 
 	public void createGraphControl(final Composite composite) {
 		composite.addPaintListener(new PaintListener() {
 			public void paintControl(PaintEvent e) {
-				GC gc = e.gc;
-				gc.drawRectangle(0, 0, composite.getBounds().width-1, composite.getBounds().height-1);
-				gc.setForeground(gc.getDevice().getSystemColor(SWT.COLOR_WHITE));
-				FontMetrics fm = gc.getFontMetrics();
-				int charWidth = fm.getAverageCharWidth();
-				int width;
-				for (Step step : treilli.getSteps()) {
-					int i=0;
-					int origine = (composite.getBounds().width-(nodeIntervalle*step.size()))/2;
-					for (Node node : step) {
-						node.setX(origine+(nodeIntervalle*i));
-						node.setY(PADDING_TOP+(nodeSpace*(step.getNumber()-1)));
-						width = node.getName().length()*charWidth;
-						gc.drawText(node.getName(), node.getX()-(width/2), node.getY());
+				if(treilli!=null){
+					GC gc = e.gc;
+					gc.drawRectangle(0, 0, composite.getBounds().width-1, composite.getBounds().height-1);
+					gc.setForeground(gc.getDevice().getSystemColor(SWT.COLOR_WHITE));
+					FontMetrics fm = gc.getFontMetrics();
+					int charWidth = fm.getAverageCharWidth();
+					int width;
+					for (Step step : treilli.getSteps()) {
+						int i=0;
+						int origine = (composite.getBounds().width-(nodeIntervalle*step.size()))/2;
+						for (Node node : step) {
+							node.setX(origine+(nodeIntervalle*i));
+							node.setY(PADDING_TOP+(nodeSpace*(step.getNumber()-1)));
+							width = node.getName().length()*charWidth;
+							gc.drawText(node.getName(), node.getX()-(width/2), node.getY());
 
-						i++;
-						for (Node parent : node.getParents()) {
-							gc.drawLine(node.getX(), node.getY(), parent.getX(), parent.getY()+15);
+							i++;
+							for (Node parent : node.getParents()) {
+								gc.drawLine(node.getX(), node.getY(), parent.getX(), parent.getY()+15);
+							}
 						}
 					}
 				}
@@ -161,9 +176,8 @@ public class MainView extends Composite{
 	}
 
 	private void createPartControl(){
-
 		Composite panelComposite = new Composite(this, SWT.NONE);
-		panelComposite.setLayout(new GridLayout(3, false));
+		panelComposite.setLayout(new GridLayout(4, false));
 		panelComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		Label lblNumberOfCriteria = new Label(panelComposite, SWT.NONE);
@@ -175,44 +189,77 @@ public class MainView extends Composite{
 		gd_txtNumberOfCriteria.widthHint = 107;
 		txtNumberOfCriteria.setLayoutData(gd_txtNumberOfCriteria);
 		new Label(panelComposite, SWT.NONE);
+		new Label(panelComposite, SWT.NONE);
+
+		Label lblNumberOfClass = new Label(panelComposite, SWT.NONE);
+		lblNumberOfClass.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblNumberOfClass.setText("Number of class");
+
+		txtNumberOfClass = new Text(panelComposite, SWT.BORDER);
+		txtNumberOfClass.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		new Label(panelComposite, SWT.NONE);
+		new Label(panelComposite, SWT.NONE);
 
 		Label lblPathOfData = new Label(panelComposite, SWT.NONE);
 		lblPathOfData.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblPathOfData.setText("Path of data file");
+		lblPathOfData.setText("Path of data learning file");
 
 		txtBrowse = new Text(panelComposite, SWT.BORDER);
 		txtBrowse.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		btnParcourir = new Button(panelComposite, SWT.NONE);
+		GridData gbParcourir = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gbParcourir.widthHint = 30;
+		btnParcourir.setLayoutData(gbParcourir);
 		btnParcourir.setText("...");
 		new Label(panelComposite, SWT.NONE);
 		new Label(panelComposite, SWT.NONE);
+		new Label(panelComposite, SWT.NONE);
 
-		btnCalculate = new Button(panelComposite, SWT.NONE);
+		Composite compositeBtn = new Composite(panelComposite, SWT.NONE);
+		compositeBtn.setLayout(new GridLayout(2,true));
+		compositeBtn.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
 
-		btnCalculate.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
-		btnCalculate.setText("Calculate");
+		btnRun = new Button(compositeBtn, SWT.NONE);
+		GridData gbRun = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
+		gbRun.widthHint = 100;
+		gbRun.heightHint = 30;
+		btnRun.setLayoutData(gbRun);
+		btnRun.setText("Run Learning");
+
+		btnReset = new Button(compositeBtn, SWT.NONE);
+		GridData gbReset = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
+		gbReset.widthHint = 100;
+		gbReset.heightHint = 30;
+		btnReset.setLayoutData(gbReset);
+		btnReset.setText("Reset");
+		btnReset.setEnabled(false);
+		new Label(panelComposite, SWT.NONE);
 
 		Label lblSeperator = new Label(this, SWT.SEPARATOR | SWT.HORIZONTAL);
 		GridData gd_lblSeperator = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gd_lblSeperator.verticalIndent = 10;
+		gd_lblSeperator.verticalIndent = 5;
 		lblSeperator.setLayoutData(gd_lblSeperator);
 
-		Composite composite = new Composite(this, SWT.NONE);
-		composite.setLayout(new GridLayout(2, false));
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
+		Composite compositeContent = new Composite(this, SWT.NONE);
+		compositeContent.setLayout(new GridLayout(2, false));
+		compositeContent.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
 
-		CLabel lblResult = new CLabel(composite, SWT.NONE);
-		lblResult.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD));
+		CLabel lblResult = new CLabel(compositeContent, SWT.NONE);
+		lblResult.setTopMargin(0);
+		lblResult.setBottomMargin(0);
+		lblResult.setFont(titleFont);
 		lblResult.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 		lblResult.setText("Result of identification");
 
-		CLabel lblLattice = new CLabel(composite, SWT.NONE);
-		lblLattice.setFont(SWTResourceManager.getFont("Segoe UI", 11, SWT.BOLD));
+		CLabel lblLattice = new CLabel(compositeContent, SWT.NONE);
+		lblLattice.setTopMargin(0);
+		lblLattice.setBottomMargin(0);
+		lblLattice.setFont(titleFont);
 		lblLattice.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 		lblLattice.setText("Lattice Graph");
 
-		Composite compositeResult = new Composite(composite, SWT.NONE);
+		Composite compositeResult = new Composite(compositeContent, SWT.NONE);
 		compositeResult.setLayout(new GridLayout(1, false));
 		GridData gdResult = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gdResult.widthHint = 205;
@@ -232,21 +279,44 @@ public class MainView extends Composite{
 		tblclmnNewColumn_1.setWidth(73);
 		tblclmnNewColumn_1.setText("Weight");
 
-		Composite compositeLattice = new Composite(composite, SWT.NONE);
-		GridData gdLattice = new GridData(SWT.FILL, SWT.FILL, true, true);
-		compositeLattice.setLayoutData(gdLattice);
+		Composite compositeLattice = new Composite(compositeContent, SWT.NONE);
+		compositeLattice.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		compositeLattice.setLayout(new GridLayout(1,false));
 		compositeLattice.setSize(compositeLattice.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
 		scrolledComposite = new ScrolledComposite(compositeLattice, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		compositeGraph = new Composite(scrolledComposite, SWT.NONE);
-		compositeGraph.setBackground(SWTResourceManager.getColor(SWT.COLOR_BLUE));
+		compositeGraph.setBackground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
 
-		composite.setBackgroundMode(SWT.INHERIT_DEFAULT);
+		scrolledComposite.setContent(compositeGraph);
+		scrolledComposite.setExpandHorizontal(true);
+		scrolledComposite.setExpandVertical(true);
+
+		compositeContent.setBackgroundMode(SWT.INHERIT_DEFAULT);
+
+		Composite composite = new Composite(this, SWT.NONE);
+		composite.setLayout(new GridLayout(2, false));
+
+		CLabel lblResultOfClassification = new CLabel(composite, SWT.NONE);
+		lblResultOfClassification.setTopMargin(0);
+		lblResultOfClassification.setAlignment(SWT.CENTER);
+		GridData gd_lblResultOfClassification = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
+		gd_lblResultOfClassification.widthHint = 205;
+		lblResultOfClassification.setLayoutData(gd_lblResultOfClassification);
+		lblResultOfClassification.setFont(titleFont);
+		lblResultOfClassification.setText("Details report");
+
+		btnAddDataToClassify = new Button(composite, SWT.NONE);
+		btnAddDataToClassify.setText("Add data to classify");
+
+		text = new Text(this, SWT.BORDER | SWT.MULTI);
+		text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 	}
 
 	public void reset(){
+		treilli = null;
 		table.removeAll();
+		compositeGraph.redraw();
 	}
 }
